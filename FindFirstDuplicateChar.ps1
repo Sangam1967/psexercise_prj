@@ -1,52 +1,70 @@
-﻿
+﻿function find_dup_char{
+ 
+    Param(
+        [string]$mystring 
+    )
+ 
+    $mytempstr = ''
+    $init = 0
+    $matchfound = 0
+    $matchchar = ''
 
-
-$mystring = Read-Host "Input string and press enter"
-
-#[ValidatePattern('[a-zA-Z0-9]')]$mystring
-
-$mytempstr = ''
-
-$init = 0
-
-$matchfound = 0
-$matchchar = ''
-
-foreach ($ch in $mystring.ToCharArray())
-{ 
+    foreach ($ch in $mystring.ToCharArray())
+    { 
     
-    if ($mystring.IndexOf($ch) -gt 0)
-    {
-
-        if ($mytempstr -match $ch)
+        if ($mystring.IndexOf($ch) -gt 0)
         {
-           $matchfound = 1
-           $matchchar = $ch
-           break
-        }
-        $mytempstr += $ch
+
+            if ($mytempstr -match $ch)
+            {
+                $matchfound = 1
+                $matchchar = $ch
+                break
+            }
+            $mytempstr += $ch
         
-    } 
+        } 
+        else
+        {
+            if ($init)
+            {
+                $matchfound = 1
+                $matchchar = $ch
+                break
+            }
+            $mytempstr += $ch
+            $init = 1
+        }
+    }
+    if ($matchfound)
+    {
+        return $ch
+    }
     else
     {
-         #if (($mytempstr.Lenght) -gt 0) //has a bug....
-         if ($init)
-         {
-            $matchfound = 1
-            $matchchar = $ch
-            break
-         }
-         
-         $mytempstr += $ch
-         $init = 1
+        return 
     }
+ 
 }
+
+#loop to get valid input..
+
+do
+{
+    $mystring = Read-Host "Input alphanumeric string and press enter"
+}while ($mystring -notmatch '^[a-z0-9]+$')
+
+
+
+
+$fch = find_dup_char ($mystring)
 
 if ($matchfound)
 {
-     Write-Host "There was a duplicate character in the input string " $matchchar
+     Write-Host "The first duplicate character in the input string is: " $fch
 }
 else
 {
     Write-Host "The input string does not have duplicate characters"
 }
+
