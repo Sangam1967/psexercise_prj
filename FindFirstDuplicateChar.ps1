@@ -4,7 +4,7 @@
         [string]$mystring 
     )
  
-    $mytempstr = ''
+    $mytempstr = @()
     $init = 0
     $matchfound = 0
     $matchchar = ''
@@ -15,7 +15,7 @@
         if ($mystring.IndexOf($ch) -gt 0)
         {
 
-            if ($mytempstr -match $ch)
+            if ($mytempstr -clike $ch)
             {
                 $matchfound = 1
                 $matchchar = $ch
@@ -26,11 +26,12 @@
         } 
         else
         {
-            if ($init)
+            if (($init) -and ($mytempstr -clike $ch))
             {
                 $matchfound = 1
                 $matchchar = $ch
                 break
+             
             }
             $mytempstr += $ch
             $init = 1
@@ -52,14 +53,14 @@
 do
 {
     $mystring = Read-Host "Input alphanumeric string and press enter"
-}while ($mystring -notmatch '^[a-z0-9]+$')
+}while ($mystring -notmatch '^[a-zA-Z0-9]+$')
 
 
 
 
 $fch = find_dup_char ($mystring)
 
-if ($matchfound)
+if ($fch)
 {
      Write-Host "The first duplicate character in the input string is: " $fch
 }
